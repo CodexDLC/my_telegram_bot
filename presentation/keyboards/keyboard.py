@@ -1,8 +1,25 @@
-from aiogram.types import ReplyKeyboardMarkup
+# presentation/keyboards/keyboard.py
+
+from aiogram.types import InlineKeyboardMarkup
+from presentation.keyboards.buttons import (
+    btn_create_ad, btn_list_ads, btn_find_ads,
+    btn_confirm, btn_return, btn_cancel
+)
 
 
-from presentation.keyboards.buttons import button_announcement, button_list
+
+def start_inline_kb() -> InlineKeyboardMarkup:
+    # раскладка: по одной кнопке в ряд
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [btn_create_ad],
+        [btn_list_ads],
+        [btn_find_ads],
+    ])
 
 
-def start_keyboard():
-    return ReplyKeyboardMarkup(keyboard=[button_announcement, button_list])
+def confirm_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [btn_confirm],
+        [btn_return],
+        [btn_cancel],
+    ])
