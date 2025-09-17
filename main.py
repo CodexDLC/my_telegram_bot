@@ -11,9 +11,8 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
 
+
 async def main():
-
-
     for r in routes:
         dp.include_router(r)
 

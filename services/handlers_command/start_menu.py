@@ -8,6 +8,7 @@ from presentation.text.start import start_text
 
 # где лежит текст меню
 
+
 async def show_start_menu(ctx: Message | CallbackQuery) -> None:
     kb = start_inline_kb()
 
@@ -22,17 +23,19 @@ async def show_start_menu(ctx: Message | CallbackQuery) -> None:
                 inline_message_id=ctx.inline_message_id,
                 text=start_text,
                 parse_mode="HTML",
-                reply_markup=kb
+                reply_markup=kb,
             )
             return
 
         try:
             # если предыдущее было фото с подписью — меняем подпись
             if msg.photo:
-                await msg.edit_caption(caption=start_text, reply_markup=kb, parse_mode="HTML")
+                await msg.edit_caption(
+                    caption=start_text, reply_markup=kb, parse_mode="HTML"
+                )
             else:
                 await msg.edit_text(start_text, reply_markup=kb, parse_mode="HTML")
-        except TelegramBadRequest as e:
+        except TelegramBadRequest:
             # если "message is not modified" или нельзя редактировать — отправим новое
             await msg.answer(start_text, reply_markup=kb, parse_mode="HTML")
 
