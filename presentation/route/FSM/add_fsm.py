@@ -7,14 +7,14 @@ from aiogram.types import Message, CallbackQuery
 from constant.callback import CONFIRM_SAVE, CONFIRM_CANCEL, CONFIRM_BACK
 from infrastructure.repositor.adv_repo import FileAdvRepo
 from presentation.keyboards.keyboard import confirm_kb
-from presentation.route.commands import start_handler
 from services.handlers_command.start_menu import show_start_menu
 
 router = Router(name="adv_create")
 
+
 class AdCreate(StatesGroup):
     WAIT_CONTENT = State()
-    CONFIRM      = State()
+    CONFIRM = State()
 
 
 @router.message(StateFilter(AdCreate.WAIT_CONTENT), F.text & ~F.via_bot)
@@ -37,6 +37,7 @@ async def wait_foto(m: Message, state: FSMContext):
     await state.update_data(kind="foto", text=caption, file_id=file_id)
     await goto_confirm(message=m, state=state)
 
+
 @router.message(StateFilter(AdCreate.WAIT_CONTENT), F.voice)
 async def wait_voice(m: Message, state: FSMContext):
     file_id = m.voice.file_id
@@ -47,16 +48,17 @@ async def wait_voice(m: Message, state: FSMContext):
 
 @router.message(StateFilter(AdCreate.WAIT_CONTENT))
 async def wait_unsupported(m: Message):
-    await m.answer("Мне нужен текст, фото или голосовое. Попробуй ещё раз. /cancel — отмена.")
-
+    await m.answer(
+        "Мне нужен текст, фото или голосовое. Попробуй ещё раз. /cancel — отмена."
+    )
 
 
 async def goto_confirm(message: Message, state: FSMContext) -> None:
-    data   = await state.get_data()            # {kind, text, file_id, tags?}
-    kind   = data.get("kind")
-    text   = (data.get("text") or "").strip()
-    file_id= data.get("file_id")
-    kb     = confirm_kb()
+    data = await state.get_data()  # {kind, text, file_id, tags?}
+    kind = data.get("kind")
+    text = (data.get("text") or "").strip()
+    file_id = data.get("file_id")
+    kb = confirm_kb()
 
     await state.set_state(AdCreate.CONFIRM)
 
@@ -64,7 +66,9 @@ async def goto_confirm(message: Message, state: FSMContext) -> None:
     if kind == "text":
         await message.answer(f"Предпросмотр объявления:\n\n{text}", reply_markup=kb)
     elif kind == "photo" and file_id:
-        await message.answer_photo(photo=file_id, caption=text or "Без подписи", reply_markup=kb)
+        await message.answer_photo(
+            photo=file_id, caption=text or "Без подписи", reply_markup=kb
+        )
     elif kind == "voice" and file_id:
         await message.answer_voice(voice=file_id, reply_markup=kb)
     else:
@@ -73,7 +77,10 @@ async def goto_confirm(message: Message, state: FSMContext) -> None:
 
 
 @router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_SAVE)
-async def on_confirm_save(call: CallbackQuery, state: FSMContext, ):
+async def on_confirm_save(
+    call: CallbackQuery,
+    state: FSMContext,
+):
     await call.answer()
     draft = await state.get_data()
     repo = FileAdvRepo()
@@ -83,17 +90,15 @@ async def on_confirm_save(call: CallbackQuery, state: FSMContext, ):
 
 
 @router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_BACK)
-async def adv_back(call: CallbackQuery, state: FSMContext, ):
-
+async def adv_back(
+    call: CallbackQuery,
+    state: FSMContext,
+):
     await state.set_state(AdCreate.WAIT_CONTENT)
-    await call.message.edit_text(
-        "Введите ваше объявление заново",
-        reply_markup=None
-    )
+    await call.message.edit_text("Введите ваше объявление заново", reply_markup=None)
 
 
 @router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_CANCEL)
 async def adv_cancel(call: CallbackQuery, state: FSMContext):
     await state.clear()
     await show_start_menu(call)
-
