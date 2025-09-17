@@ -30,6 +30,7 @@ async def show_start_menu(ctx: Message | CallbackQuery) -> None:
         try:
             # если предыдущее было фото с подписью — меняем подпись
             if msg.photo:
+
                 await msg.edit_caption(
                     caption=start_text, reply_markup=kb, parse_mode="HTML"
                 )
