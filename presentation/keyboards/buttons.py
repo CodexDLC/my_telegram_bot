@@ -10,5 +10,5 @@ btn_find_ads  = InlineKeyboardButton(text="Найти по ключу",  callbac
 # Кнопка меню Confirm
 btn_confirm   = InlineKeyboardButton(text="Сохранить", callback_data="adv:confirm:save")
 btn_return    = InlineKeyboardButton(text="Назад", callback_data="adv:confirm:back")
-btn_cancel   = InlineKeyboardButton(text="Назад", callback_data="adv:confirm:cancel")
+btn_cancel   = InlineKeyboardButton(text="Отмена", callback_data="adv:confirm:cancel")
 

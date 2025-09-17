@@ -2,9 +2,13 @@ from aiogram import Router, F
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
+from constant.callback import CONFIRM_SAVE, CONFIRM_CANCEL, CONFIRM_BACK
+from infrastructure.repositor.adv_repo import FileAdvRepo
 from presentation.keyboards.keyboard import confirm_kb
+from presentation.route.commands import start_handler
+from services.handlers_command.start_menu import show_start_menu
 
 router = Router(name="adv_create")
 
@@ -19,12 +23,9 @@ async def wait_text(m: Message, state: FSMContext):
     if not text:
         await m.answer("Нельзя отправлять пустой текст")
         return
-
     # Записываем сообщение в память
     await state.update_data(kind="text", text=text, file_id=None)
-
-    # Отправляем сообщение пользователю
-    await m.answer(f"Принял текст объявления:\n\n{text}")
+    await goto_confirm(message=m, state=state)
 
 
 @router.message(StateFilter(AdCreate.WAIT_CONTENT), F.foto)
@@ -32,15 +33,67 @@ async def wait_foto(m: Message, state: FSMContext):
     largest = m.photo[-1]
     file_id = largest.file_id
     caption = (m.caption or "").strip()
-
+    # Записываем фото и подпись в память
     await state.update_data(kind="foto", text=caption, file_id=file_id)
-    await m.answer_photo(photo=file_id, caption=caption or "Фото без подписи")
-
+    await goto_confirm(message=m, state=state)
 
 @router.message(StateFilter(AdCreate.WAIT_CONTENT), F.voice)
 async def wait_voice(m: Message, state: FSMContext):
     file_id = m.voice.file_id
-    caption = (m.caption or "").strip()
+    # Записываем голосовое в память сообщение в память
+    await state.update_data(kind="voice", file_id=file_id)
+    await goto_confirm(message=m, state=state)
 
-    await state.update_data(kind="audio",  caption=caption, file_id=file_id)
+
+@router.message(StateFilter(AdCreate.WAIT_CONTENT))
+async def wait_unsupported(m: Message):
+    await m.answer("Мне нужен текст, фото или голосовое. Попробуй ещё раз. /cancel — отмена.")
+
+
+
+async def goto_confirm(message: Message, state: FSMContext) -> None:
+    data   = await state.get_data()            # {kind, text, file_id, tags?}
+    kind   = data.get("kind")
+    text   = (data.get("text") or "").strip()
+    file_id= data.get("file_id")
+    kb     = confirm_kb()
+
+    await state.set_state(AdCreate.CONFIRM)
+
+    # Превью по типу контента
+    if kind == "text":
+        await message.answer(f"Предпросмотр объявления:\n\n{text}", reply_markup=kb)
+    elif kind == "photo" and file_id:
+        await message.answer_photo(photo=file_id, caption=text or "Без подписи", reply_markup=kb)
+    elif kind == "voice" and file_id:
+        await message.answer_voice(voice=file_id, reply_markup=kb)
+    else:
+        await message.answer("Не понимаю черновик. Пришлите текст/фото/voice заново.")
+        await state.set_state(AdCreate.WAIT_CONTENT)
+
+
+@router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_SAVE)
+async def on_confirm_save(call: CallbackQuery, state: FSMContext, ):
+    await call.answer()
+    draft = await state.get_data()
+    repo = FileAdvRepo()
+
+    await repo.save_adv_data(draft)
+    await state.clear()
+
+
+@router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_BACK)
+async def adv_back(call: CallbackQuery, state: FSMContext, ):
+
+    await state.set_state(AdCreate.WAIT_CONTENT)
+    await call.message.edit_text(
+        "Введите ваше объявление заново",
+        reply_markup=None
+    )
+
+
+@router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_CANCEL)
+async def adv_cancel(call: CallbackQuery, state: FSMContext):
+    await state.clear()
+    await show_start_menu(call)
 

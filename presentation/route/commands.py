@@ -1,18 +1,18 @@
 # presentation/route/commands.py
 
 from aiogram import Router
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram.filters import Command
 
-from presentation.keyboards.keyboard import start_inline_kb
-from presentation.text.start import start_text
+from services.handlers_command.start_menu import show_start_menu
 
 router = Router(name="commands_router")
 
 @router.message(Command("start"))
-async def start_handler(message: Message):
-    kb = start_inline_kb()
-    await message.answer(start_text, parse_mode="HTML", reply_markup=kb)
+async def start_handler(m: Message, state: FSMContext):
+    await state.clear()
+    await show_start_menu(m)
 
 @router.message(Command("help"))
 async def help_handler(m: Message):
