@@ -1,6 +1,9 @@
 # presentation/keyboards/buttons.py
 
-from aiogram.types import InlineKeyboardButton
+from aiogram.types import InlineKeyboardButton, KeyboardButton
+
+from constant.F_text_menu import kb_maine_hide, kb_maine_help
+
 
 # -= Кнопки для start панели =-
 btn_create_ad = InlineKeyboardButton(text="Создать", callback_data="adv:create")
@@ -11,3 +14,4 @@ btn_find_ads = InlineKeyboardButton(text="Найти по ключу", callback_
 btn_confirm = InlineKeyboardButton(text="Сохранить", callback_data="adv:confirm:save")
 btn_return = InlineKeyboardButton(text="Назад", callback_data="adv:confirm:back")
 btn_cancel = InlineKeyboardButton(text="Отмена", callback_data="adv:confirm:cancel")
+

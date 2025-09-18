@@ -3,13 +3,13 @@ from aiogram.exceptions import TelegramBadRequest
 
 # твои функции/константы
 from presentation.keyboards.keyboard import start_inline_kb
-from presentation.text.start import start_text
+from presentation.text.start import start_text_ab
 
 
 # где лежит текст меню
 
 
-async def show_start_menu(ctx: Message | CallbackQuery) -> None:
+async def show_menu_ab(ctx: Message | CallbackQuery) -> None:
     kb = start_inline_kb()
 
     # вызов из колбэка → редактируем существующее сообщение
@@ -21,7 +21,7 @@ async def show_start_menu(ctx: Message | CallbackQuery) -> None:
             # инлайн-режим (редкость). Тогда нужно через bot.edit_message_text
             await ctx.bot.edit_message_text(
                 inline_message_id=ctx.inline_message_id,
-                text=start_text,
+                text=start_text_ab,
                 parse_mode="HTML",
                 reply_markup=kb,
             )
@@ -32,14 +32,14 @@ async def show_start_menu(ctx: Message | CallbackQuery) -> None:
             if msg.photo:
 
                 await msg.edit_caption(
-                    caption=start_text, reply_markup=kb, parse_mode="HTML"
+                    caption=start_text_ab, reply_markup=kb, parse_mode="HTML"
                 )
             else:
-                await msg.edit_text(start_text, reply_markup=kb, parse_mode="HTML")
+                await msg.edit_text(start_text_ab, reply_markup=kb, parse_mode="HTML")
         except TelegramBadRequest:
             # если "message is not modified" или нельзя редактировать — отправим новое
-            await msg.answer(start_text, reply_markup=kb, parse_mode="HTML")
+            await msg.answer(start_text_ab, reply_markup=kb, parse_mode="HTML")
 
     # вызов из /start → просто отправляем новое
     else:  # Message
-        await ctx.answer(start_text, reply_markup=kb, parse_mode="HTML")
+        await ctx.answer(start_text_ab, reply_markup=kb, parse_mode="HTML")

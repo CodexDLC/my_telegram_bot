@@ -24,12 +24,12 @@ async def cb_create(call: CallbackQuery, state: FSMContext):
 @router.callback_query(F.data == ADV_LIST)
 async def cb_list(call: CallbackQuery):
     await call.answer()
-    await call.message.answer("Здесь будет список ваших объявлений.")
+    await call.message.edit_text("Здесь будет список ваших объявлений.")
     # TODO: Добавить логику вывода списка задач из базы.
 
 
 @router.callback_query(F.data == ADV_FIND)
 async def cb_find(call: CallbackQuery):
     await call.answer()
-    await call.message.answer("Здесь будет поиск.")
+    await call.message.edit_text("Здесь будет поиск.")
     # TODO: Добавить ожидание ключа и вывод объявлений по ключу

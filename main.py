@@ -1,21 +1,26 @@
-import asyncio
 
+import asyncio
+from setting.log_setup import setup_logging
+setup_logging(level="DEBUG", to_file=True)
 import logging
 
-from aiogram import Bot, Dispatcher
-from config import BOT_TOKEN
-from config_routes import routes
+from setting.bot_factory import build_app
+from setting.config import BOT_TOKEN
 
-logging.basicConfig(level=logging.INFO)
 
-bot = Bot(BOT_TOKEN)
-dp = Dispatcher()
+from presentation.config_routes import routes
+
+
 
 
 async def main():
+    log = logging.getLogger(__name__)
+
+    bot, dp = build_app(BOT_TOKEN)
     for r in routes:
         dp.include_router(r)
 
+    log.info("Бот стартует")
     await dp.start_polling(bot)
 
 

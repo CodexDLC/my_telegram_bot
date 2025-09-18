@@ -8,7 +8,7 @@ from constant.callback import CONFIRM_SAVE, CONFIRM_CANCEL, CONFIRM_BACK
 from constant.kind import kind_text, kind_photo, kind_voice
 from infrastructure.repositor.adv_repo import FileAdvRepo
 from presentation.keyboards.keyboard import confirm_kb
-from services.handlers_command.start_menu import show_start_menu
+from services.handlers_command.start_menu import show_menu_ab
 
 router = Router(name="adv_create")
 
@@ -91,7 +91,7 @@ async def on_confirm_save(
 
     await repo.save_adv_data()
     await state.clear()
-    await show_start_menu(call)
+    await show_menu_ab(call)
 
 
 @router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_BACK)
@@ -106,4 +106,4 @@ async def adv_back(
 @router.callback_query(StateFilter(AdCreate.CONFIRM), F.data == CONFIRM_CANCEL)
 async def adv_cancel(call: CallbackQuery, state: FSMContext):
     await state.clear()
-    await show_start_menu(call)
+    await show_menu_ab(call)
