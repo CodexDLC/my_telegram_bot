@@ -1,12 +1,12 @@
 # presentation/route/commands.py
 import logging
 
-from presentation.text.help import help_text
+from app.resources.text import help_text
 
 log = logging.getLogger(__name__)
 
-from presentation.keyboards.keyboard import main_kb
-from presentation.text.anonce import start_text
+from app.resources.keyboards.keyboard import main_kb
+from app.resources.text import start_text
 
 from aiogram import Router
 from aiogram.fsm.context import FSMContext

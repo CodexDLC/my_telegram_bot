@@ -4,10 +4,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery
 
-from constant.callback import CONFIRM_SAVE, CONFIRM_CANCEL, CONFIRM_BACK
-from constant.kind import kind_text, kind_photo, kind_voice
+from app.constant.callback import CONFIRM_SAVE, CONFIRM_CANCEL, CONFIRM_BACK
+from app.constant.kind import kind_text, kind_photo, kind_voice
 from infrastructure.repositor.adv_repo import FileAdvRepo
-from presentation.keyboards.keyboard import confirm_kb
+from app.resources.keyboards.keyboard import confirm_kb
 from services.handlers_command.start_menu import show_menu_ab
 
 router = Router(name="adv_create")

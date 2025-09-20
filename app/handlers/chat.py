@@ -3,8 +3,8 @@
 from aiogram import Router, F
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from constant.F_text_menu import kb_maine_help, kb_maine_hide, kb_maine_ad
-from presentation.text.help import help_text
+from app.constant.F_text_menu import kb_maine_help, kb_maine_hide, kb_maine_ad
+from app.resources.text import help_text
 from services.handlers_command.start_menu import show_menu_ab
 
 router = Router(name="chat")

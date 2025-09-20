@@ -1,9 +1,6 @@
 # presentation/keyboards/buttons.py
 
-from aiogram.types import InlineKeyboardButton, KeyboardButton
-
-from constant.F_text_menu import kb_maine_hide, kb_maine_help
-
+from aiogram.types import InlineKeyboardButton
 
 # -= Кнопки для start панели =-
 btn_create_ad = InlineKeyboardButton(text="Создать", callback_data="adv:create")

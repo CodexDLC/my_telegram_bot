@@ -3,8 +3,8 @@
 from aiogram.types import InlineKeyboardMarkup, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from constant.F_text_menu import kb_maine_ad, kb_maine_hide, kb_maine_help
-from presentation.keyboards.buttons import (
+from app.constant.F_text_menu import kb_maine_ad, kb_maine_hide, kb_maine_help
+from app.resources.keyboards.buttons import (
     btn_create_ad, btn_list_ads, btn_find_ads,
     btn_confirm, btn_return, btn_cancel
 )

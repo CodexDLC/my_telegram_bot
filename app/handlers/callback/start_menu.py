@@ -4,8 +4,8 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 
 from aiogram.types import CallbackQuery
-from constant.callback import ADV_CREATE, ADV_LIST, ADV_FIND
-from presentation.route.FSM.add_fsm import AdCreate
+from app.constant.callback import ADV_CREATE, ADV_LIST, ADV_FIND
+from app.handlers.FSM.add_fsm import AdCreate
 
 router = Router(name="adv_start_menu")
 # Ловим только свои payload
