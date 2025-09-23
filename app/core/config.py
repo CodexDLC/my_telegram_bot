@@ -1,12 +1,15 @@
 # setting/config.py
-
+import os
 from os import getenv
 from dotenv import load_dotenv
 
 
 load_dotenv()
 
-BOT_TOKEN = getenv("BOT_TOKEN")
+def _clean(s: str) -> str:
+    return s.strip().strip('"').strip("'") if s else s
+
+BOT_TOKEN = _clean(os.getenv("BOT_TOKEN"))
 
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN не задан в .env")

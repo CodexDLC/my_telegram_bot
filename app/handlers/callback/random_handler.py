@@ -12,7 +12,6 @@ from app.services.chat_gpt_service import gpt_answer
 
 
 from aiogram import Router, F
-from aiogram.fsm.context import FSMContext
 
 
 router = Router(name="random_fact")
