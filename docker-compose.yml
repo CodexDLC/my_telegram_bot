@@ -1,0 +1,12 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: Telegram_bot_Juvarush
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OPENAI_TOKEN=${OPENAI_TOKEN}
+    restart: always
