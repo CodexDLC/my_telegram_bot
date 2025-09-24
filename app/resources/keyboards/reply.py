@@ -1,10 +1,11 @@
+# app/resources/keyboards/reply.py
 from aiogram.types import ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-
-btn_footer_menu ="🏠 Меню"
+btn_footer_menu = "🏠 Меню"
 btn_footer_help = "❓ Помощь"
 btn_footer_setting = "⚙️ Настройки"
+
 
 def main_kb() -> ReplyKeyboardMarkup:
     b = ReplyKeyboardBuilder()
@@ -16,8 +17,5 @@ def main_kb() -> ReplyKeyboardMarkup:
         resize_keyboard=True,
         one_time_keyboard=False,
         is_persistent=True,
-        input_field_placeholder="Основные действия"
+        input_field_placeholder="Основные действия",
     )
-
-
-

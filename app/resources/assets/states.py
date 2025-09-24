@@ -1,12 +1,11 @@
-from aiogram.fsm.state import StatesGroup, State
+#app/resources/assets/states.py
 
 
-
+from aiogram.fsm.state import State, StatesGroup
 
 
 class ChatGpt(StatesGroup):
     TEXT_MSG = State()
-
 
 
 class TranslateChat(StatesGroup):

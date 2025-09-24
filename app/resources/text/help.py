@@ -1,4 +1,4 @@
-
+# app/resources/text/help.py
 
 
 help_text = """

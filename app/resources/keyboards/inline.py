@@ -1,4 +1,5 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+# app/resources/keyboards/inline.py
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from app.resources.assets.dict_preset import ROLE_SPECS
@@ -19,10 +20,12 @@ def start_inline_kb() -> InlineKeyboardMarkup:
 
     return kb.as_markup()
 
+
 btn_main_menu = InlineKeyboardButton(
     text="🔙 Вернуться в меню",
     callback_data="main_menu",
 )
+
 
 def random_inline_kb() -> InlineKeyboardMarkup:
     """
@@ -63,13 +66,13 @@ def translate_inline_kb() -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-
-
 def get_person_inline_kb() -> InlineKeyboardMarkup:
-
-    rows = [[InlineKeyboardButton(text=spec["label"], callback_data=f"ROLE:{key}")]
-            for key, spec in ROLE_SPECS.items()]
+    rows = [
+        [InlineKeyboardButton(text=spec["label"], callback_data=f"ROLE:{key}")]
+        for key, spec in ROLE_SPECS.items()
+    ]
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
 
 def person_inline_kb() -> InlineKeyboardMarkup:
     """

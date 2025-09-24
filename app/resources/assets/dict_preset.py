@@ -1,8 +1,7 @@
+# app/resources/assets/dict_preset.py
 from __future__ import annotations
 
-
-
-from typing import  Dict, TypedDict, Literal
+from typing import Dict, Literal, TypedDict
 
 ChatMode = Literal["random_fact", "chat", "persona", "quiz", "translate", "reco"]
 
@@ -12,6 +11,7 @@ class ModePreset(TypedDict):
     system: str
     temperature: float
     max_tokens: int
+
 
 MODE_PRESETS: Dict[ChatMode, ModePreset] = {
     "random_fact": {
@@ -58,6 +58,7 @@ class RoleSpec(TypedDict):
     hint: str
     temperature: float
     max_tokens: int
+
 
 ROLE_SPECS: Dict[str, RoleSpec] = {
     "einstein": {

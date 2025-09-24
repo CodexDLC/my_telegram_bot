@@ -1,3 +1,4 @@
+# app/resources/text/anonce.py
 
 
 
@@ -38,4 +39,3 @@ translate_chat = """
 
 
 """
-
