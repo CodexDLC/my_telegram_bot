@@ -1,9 +1,14 @@
 # app/resources/keyboards/inline.py
+import logging
+
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.resources.assets.dict_preset import ROLE_SPECS
 
+from app.resources.assets.quiz_theme import QUIZ_THEME
+from app.resources.assets.role_dict import ROLE_SPECS
+
+log = logging.getLogger(__name__)
 
 def start_inline_kb() -> InlineKeyboardMarkup:
     """
@@ -65,13 +70,16 @@ def translate_inline_kb() -> InlineKeyboardMarkup:
 
     return kb.as_markup()
 
-
+# в теории можно сделать одну универсальную клавиатуру для нескольких режимов, которые принимаю Dict
+# Но я пока не хочу заморачиваться переписывать код. Потом может улучшу
 def get_person_inline_kb() -> InlineKeyboardMarkup:
-    rows = [
-        [InlineKeyboardButton(text=spec["label"], callback_data=f"ROLE:{key}")]
-        for key, spec in ROLE_SPECS.items()
-    ]
-    return InlineKeyboardMarkup(inline_keyboard=rows)
+    kb = InlineKeyboardBuilder()
+    for key, spec in ROLE_SPECS.items():
+        kb.button(text=spec["label"], callback_data=f"ROLE:{key}")
+
+    kb.add(btn_main_menu)
+    kb.adjust(2)
+    return kb.as_markup()
 
 
 def person_inline_kb() -> InlineKeyboardMarkup:
@@ -84,4 +92,35 @@ def person_inline_kb() -> InlineKeyboardMarkup:
     kb.add(btn_main_menu)
     kb.adjust(2)
 
+    return kb.as_markup()
+
+
+
+def get_theme_quiz_inline_kb() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    for key, spec in QUIZ_THEME.items():
+        log.debug(f"Ключ = {key}, подпись = {spec["label"]}")
+        kb.button(text=spec["label"], callback_data=f"theme:{key}")
+    kb.add(btn_main_menu)
+    kb.adjust(2)
+    return kb.as_markup()
+
+def star_game_inline_kb() -> InlineKeyboardMarkup:
+    """
+    :return: Клавиатура старта игры
+
+    """
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Получить вопрос", callback_data="game:start")
+    kb.button(text="Закончить игру", callback_data="game:finish")
+    kb.adjust(2)
+
+    return kb.as_markup()
+
+
+def quiz_question_inline_kb(data: list)-> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    for i, value in enumerate(data):
+        kb.button(text=value, callback_data=f"index:{i}")
+    kb.adjust(2)
     return kb.as_markup()

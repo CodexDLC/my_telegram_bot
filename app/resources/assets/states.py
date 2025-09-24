@@ -14,3 +14,10 @@ class TranslateChat(StatesGroup):
 
 class PersonTalk(StatesGroup):
     TEXT_PERSONA = State()
+
+
+
+class QuizGame(StatesGroup):
+    START_GAME = State()
+    PLAYING_GAME = State()
+
