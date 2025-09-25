@@ -36,6 +36,7 @@ async def gpt_answer(mode: ChatMode, user_text: str, **kw: Any) -> str:
         messages=msg,
         temperature=temperature,
         max_tokens=max_tokens,
+        presence_penalty=0.6,
 
     )
     return resp.choices[0].message.content or ""
