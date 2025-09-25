@@ -1,7 +1,6 @@
-import logging
 import json
+import logging
 from html import escape
-from typing import Any, Coroutine
 
 from app.resources.assets.quiz_theme import DIFFICULTY_DATA
 from app.resources.keyboards.inline import quiz_question_inline_kb
@@ -12,17 +11,18 @@ log = logging.getLogger(__name__)
 async def parser_question(data)->tuple:
     data = json.loads(data)
     print(f"{type(data)} - {data}")
-    kb_data = data['options']
-    question_resp_index = data['correct']
-    question_resp_text = data['explanation']
+    kb_data = data.get('options')
+    question_resp_index = data.get('correct')
+    question_resp_text =  data.get('explanation')
+    clearn_question = data.get('question')
 
     text_quest = f"""    
-    <b>Вопрос:</b> {data.get('question')}        
+    <b>Вопрос:</b> {clearn_question}        
     """
     kb = quiz_question_inline_kb(kb_data)
 
     return (text_quest, question_resp_index, question_resp_text,
-            kb)
+            clearn_question, kb)
 
 
 def make_ui_quiz(data: dict) -> str:
@@ -54,3 +54,5 @@ async def summ_score(dif: str, score: int) -> int | None:
     return None
 
 
+
+# async def

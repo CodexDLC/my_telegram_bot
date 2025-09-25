@@ -6,11 +6,12 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-
+from app.handlers.callback.constant import gpt_role
 from app.resources.assets.quiz_theme import TOPIC_KEYS, DIFFICULTY_DATA, QUIZ_THEME, ALL_DIFFICULTIES
 from app.resources.assets.states import QuizGame
 from app.resources.keyboards.inline import get_theme_quiz_inline_kb, star_game_inline_kb
 from app.services.chat_gpt_service import gpt_answer
+from app.services.context_service import get_history, add_message
 from app.services.quiz_service import parser_question, make_ui_quiz, summ_score
 
 log = logging.getLogger(__name__)
@@ -56,17 +57,24 @@ async def quiz_question_handler(call: CallbackQuery, state: FSMContext) -> None:
     score_round = data["score_round"]
     score_game = data["score_game"]
     difficulty = data["difficulty"]
+    user_id = call.from_user.id
+    mode_context = "quiz_quest_history"
 
     log.debug(f"\ntopic = {topic}\n difficulty = {difficulty}\n"
               f"score_game = {score_game}\n score_round = {score_round}\n"
               f"label = {data["label"]}")
 
     if call.data == "game:start":
-        resp_question = await gpt_answer("quiz", "", difficulty=difficulty, topic=topic)
-        text_quest, in_res, res_text, kb = await parser_question(resp_question)
+        context = await get_history(user_id, mode_context)
+        resp_question = await gpt_answer("quiz", "", difficulty=difficulty, topic=topic, context=context)
+        log.debug(f"{resp_question}")
+        text_quest, in_res, res_text, clearn_question, kb = await parser_question(resp_question)
+        await add_message(user_id, mode_context, gpt_role, clearn_question)
         await state.update_data(in_res=in_res, res_text=res_text, text_quest=text_quest)
         ui_game = make_ui_quiz(data)
         await call.message.edit_text(f"{ui_game} {text_quest}", parse_mode="HTML", reply_markup=kb)
+
+
 
     elif call.data == "game:finish":
         await state.clear()
@@ -96,8 +104,19 @@ async def quiz_answer_handler(call: CallbackQuery, state: FSMContext):
              f"score_game = {score_game}\n label = {label}\n "
               f"score_round = {score_round}" )
 
-    ui_game = make_ui_quiz(data)
+    thresholds = [
+        (12, 30, "impossible"),
+        (7, 7, "hard"),
+        (3, 3, "normal"),
+    ]
+    for r, g, level in thresholds:
+        if score_round == r and score_game >= g:
+            difficulty = level
+            break
 
+
+
+    ui_game = make_ui_quiz(data)
 
     if in_res == ans_data:
         score_game = await summ_score(dif=difficulty,score=score_game)
@@ -119,24 +138,20 @@ async def quiz_answer_handler(call: CallbackQuery, state: FSMContext):
                                       reply_markup=star_game_inline_kb())
             miss_ans += 1
 
-    thresholds = [
-        (12, 30, "impossible"),
-        (7, 7, "hard"),
-        (3, 3, "normal"),
-    ]
-    for r, g, level in thresholds:
-        if score_round == r and score_game >= g:
-            difficulty = level
-            break
+
+
     log.debug(
         f"Перед новым заданием  {difficulty}"
     )
+
     await state.update_data(
         right_ans   = right_ans,
         miss_ans    = miss_ans,
         score_game  = score_game,
         score_round = score_round,
-        difficulty = difficulty
+        difficulty  = difficulty,
+
+
     )
 
 

@@ -57,27 +57,52 @@ def build_persona(
 
 def build_quiz(
     preset: ModePreset,
-    user_text: str,
+    user_text: str | Any,
     **kw: Any
 ) -> List[ChatCompletionMessageParam]:
 
     topic = kw["topic"]
     difficulty = kw["difficulty"]
+    context = kw.get("context")
 
     dev: ChatCompletionDeveloperMessageParam = {
         "role": "developer",
-        "content": f"{preset['developer']} : Выдавай ОДИН вопрос Quiz по теме {topic} и сложности {difficulty} "                   
+        "content": f"{preset['developer']} : Выдавай ОДИН вопрос Quiz по теме {topic} и сложности {difficulty}. "
+                   f"КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО повторять вопросы из этого списка: [{context}]. "
                    f"{DEV_SQUIZ}"
+
     }
     sys: ChatCompletionSystemMessageParam = {
         "role": "system",
         "content": preset["system"],
     }
-    usr: ChatCompletionUserMessageParam = {
-        "role": "user",
-        "content": user_text,
-    }
+    usr: ChatCompletionUserMessageParam = {"role": "user", "content": user_text}
+
     return [dev, sys, usr]
+
+
+
+
+def build_chat(
+    preset: ModePreset,
+    user_text: str | Any,
+    **kw: Any
+) -> List[ChatCompletionMessageParam]:
+
+    his = kw.get("history")
+
+    dev: ChatCompletionDeveloperMessageParam = {
+        "role": "developer",
+        "content": preset["developer"],
+    }
+    sys: ChatCompletionSystemMessageParam = {
+        "role": "system",
+        "content": preset["system"],
+    }
+
+    return [dev, sys] + his
+
+
 
 
 
@@ -85,7 +110,7 @@ Builder = Callable[..., list[ChatCompletionMessageParam]]
 
 BUILDERS: dict[ChatMode, Builder] = {
     "random_fact": build_default,
-    "chat": build_default,
+    "chat": build_chat,
     "persona": build_persona,
     "quiz": build_quiz,
     "translate": build_default,

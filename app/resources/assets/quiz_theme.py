@@ -74,16 +74,15 @@ QUIZ_THEME: Final[dict[ThemeKey, QuizTheme]]  = {
 TOPIC_KEYS = set(QUIZ_THEME.keys())
 
 DEV_SQUIZ = """
+Твоя задача — сгенерировать НОВЫЙ, УНИКАЛЬНЫЙ вопрос для викторины, которого еще не было.
 Ответ — строго JSON-объект без каких-либо пояснений/текста вне JSON.
-Схема полей: topic (str), difficulty (str), question (str ≤ 500), 
-options (list[str], 4, уникальные), correct (int, 0-индексация),
-explanation (str ≤ 300).
+Схема полей: question (str ≤ 500), options (list[str], 4, уникальные), 
+correct (int, 0-индексация), explanation (str ≤ 300).
 Никакого Markdown, кавычек-кодов и текста вне JSON. Только JSON.
 Вопросы на русском языке
 Если данных мало — делай общий, но корректный вопрос.
 
 """
-
 
 
 
