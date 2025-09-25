@@ -4,7 +4,6 @@ import logging
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-
 from app.resources.assets.quiz_theme import QUIZ_THEME
 from app.resources.assets.role_dict import ROLE_SPECS
 
@@ -118,9 +117,11 @@ def star_game_inline_kb() -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-def quiz_question_inline_kb(data: list)-> InlineKeyboardMarkup:
+def quiz_question_inline_kb(data: list[str])-> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
+
     for i, value in enumerate(data):
         kb.button(text=value, callback_data=f"index:{i}")
     kb.adjust(2)
+
     return kb.as_markup()

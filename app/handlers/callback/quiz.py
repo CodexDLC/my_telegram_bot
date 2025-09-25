@@ -7,12 +7,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from app.handlers.callback.constant import gpt_role
-from app.resources.assets.quiz_theme import TOPIC_KEYS, DIFFICULTY_DATA, QUIZ_THEME, ALL_DIFFICULTIES
+from app.resources.assets.quiz_theme import ALL_DIFFICULTIES, DIFFICULTY_DATA, QUIZ_THEME, TOPIC_KEYS
 from app.resources.assets.states import QuizGame
 from app.resources.keyboards.inline import get_theme_quiz_inline_kb, star_game_inline_kb
 from app.services.chat_gpt_service import gpt_answer
-from app.services.context_service import get_history, add_message
-from app.services.quiz_service import parser_question, make_ui_quiz, summ_score
+from app.services.context_service import add_message, get_history
+from app.services.quiz_service import make_ui_quiz, parser_question, summ_score
 
 log = logging.getLogger(__name__)
 
@@ -22,15 +22,29 @@ router = Router(name="quiz_chat")
 @router.callback_query(F.data == "quiz_open")
 async def quiz_start_handler(call: CallbackQuery, state: FSMContext)-> None:
     await state.set_state(QuizGame.START_GAME)
-    await call.message.edit_text("Выберите тему для игры", reply_markup=get_theme_quiz_inline_kb())
+    if isinstance(call.message, Message):
+        await call.message.edit_text("Выберите тему для игры", reply_markup=get_theme_quiz_inline_kb())
 
 
 @router.callback_query(StateFilter(QuizGame.START_GAME), F.data.startswith("theme:"))
 async def pick_theme_handler(call: CallbackQuery, state: FSMContext)-> None:
-    await state.set_state(QuizGame.START_GAME)
-    topic: str = call.data.partition(":")[2]
+
+    data = call.data
+
+    if not data:
+        await call.answer("Пустой callback", show_alert=False)
+        return
+
+    topic: str = data.strip(":")[-1]
+    if not topic:
+        await call.answer("Некорректный callback", show_alert=True)
+        return
+
     if topic not in TOPIC_KEYS:
-        await call.message.edit_text("Такая тема сейчас не доступна")
+        # тут m может быть Inaccessible/None — если нужно, добавь проверку isinstance, см. ниже
+        await call.answer("Такая тема сейчас не доступна")
+        return
+
     theme = QUIZ_THEME[topic]
     difficulty = ALL_DIFFICULTIES[0]
     log.info("{theme}")
@@ -41,11 +55,13 @@ async def pick_theme_handler(call: CallbackQuery, state: FSMContext)-> None:
     await state.update_data(topic=topic, difficulty=difficulty,score_round=score_round,
                             score_game=score_game, label=DIFFICULTY_DATA["easy"]["label"],
                             right_ans=right_ans, miss_ans=miss_ans)
-    data = await state.get_data()
 
-    text_ui = make_ui_quiz(data)
+    state_data = await state.get_data()
 
-    await call.message.edit_text(f"{text_ui} {theme["descriptions"]} ", parse_mode="HTML", reply_markup=star_game_inline_kb())
+    text_ui = make_ui_quiz(state_data)
+    if isinstance(call.message, Message):
+        await call.message.edit_text(f"{text_ui} {theme["descriptions"]} ",
+                                 parse_mode="HTML", reply_markup=star_game_inline_kb())
     await state.set_state(QuizGame.PLAYING_GAME)
 
 
@@ -72,7 +88,8 @@ async def quiz_question_handler(call: CallbackQuery, state: FSMContext) -> None:
         await add_message(user_id, mode_context, gpt_role, clearn_question)
         await state.update_data(in_res=in_res, res_text=res_text, text_quest=text_quest)
         ui_game = make_ui_quiz(data)
-        await call.message.edit_text(f"{ui_game} {text_quest}", parse_mode="HTML", reply_markup=kb)
+        if isinstance(call.message, Message):
+            await call.message.edit_text(f"{ui_game} {text_quest}", parse_mode="HTML", reply_markup=kb)
 
 
 
@@ -88,9 +105,14 @@ async def quiz_question_handler(call: CallbackQuery, state: FSMContext) -> None:
 
 
 @router.callback_query(StateFilter(QuizGame.PLAYING_GAME), F.data.startswith("index:"))
-async def quiz_answer_handler(call: CallbackQuery, state: FSMContext):
+async def quiz_answer_handler(call: CallbackQuery, state: FSMContext)-> None:
+    data_str = call.data
+    if not data_str:
+        await call.answer("Пустой callback", show_alert=False)
+        return
 
-    ans_data: str = call.data.partition(":")[2]
+    ans_data: str = data_str.partition(":")[2]
+
     data = await state.get_data()
     in_res = str(data["in_res"])
     res_text = data["res_text"]
@@ -120,14 +142,14 @@ async def quiz_answer_handler(call: CallbackQuery, state: FSMContext):
 
     if in_res == ans_data:
         score_game = await summ_score(dif=difficulty,score=score_game)
+
         if isinstance(call.message, Message):
             await call.message.edit_text(f"{ui_game}\n Правильно! Накоплено очков {score_game}",
                                       parse_mode="HTML",
                                       reply_markup=star_game_inline_kb())
             right_ans += 1
-            if score_game >= 100:
-                if isinstance(call.message, Message):
-                    await call.message.edit_text(f"Вы набрали {score_game} потратили {score_round} раундов"
+            if score_game >= 100 and isinstance(call.message, Message):
+                await call.message.edit_text(f"Вы набрали {score_game} потратили {score_round} раундов"
                                                  f"правильных ответов {right_ans}ш. Не правильных ответов {miss_ans}i.",
                                                  parse_mode="HTML",
                                                  reply_markup=get_theme_quiz_inline_kb())

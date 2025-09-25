@@ -1,18 +1,17 @@
 #app/handlers/callback/chat_gpt.py
 import logging
-from keyword import kwlist
 
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from app.handlers.callback.constant import MAX_LEN, gpt_role, mod_chat_gpt
+from app.handlers.callback.constant import DEFAULT_USER_ID, MAX_LEN, gpt_role, mod_chat_gpt
 from app.resources.assets.states import ChatGpt
 from app.resources.keyboards.inline import chat_inline_kb, start_inline_kb
 from app.resources.text.anonce import chat_gpt_active, start_text
 from app.services.chat_gpt_service import gpt_answer
-from app.services.context_service import get_history, add_message
+from app.services.context_service import add_message, get_history
 
 log = logging.getLogger(__name__)
 
@@ -39,10 +38,14 @@ async def fsm_text_gpt_handler(m: Message, state: FSMContext)-> None:
             f"Нужен текст до {MAX_LEN} символов вы отправили {len(m.text)} символов."
         )
         return
-    user_id = m.from_user.id
-    await add_message(user_id, mod_chat_gpt, "user", m.text)
+    user_id: int = extract_user_id(m)
+    text = m.text
+    if text is None:
+        text = ""
 
-    chat_text = f"{m.text}"
+    await add_message(user_id, mod_chat_gpt, "user", text)
+
+    chat_text = f"{text}"
     histore_context = await get_history(user_id, mod_chat_gpt)
     msg = await m.answer("ChatGPT думает .... ")
 
@@ -63,3 +66,12 @@ async def cancel_chatgpt_handler(call: CallbackQuery, state: FSMContext)-> None:
     и можно запустить их удаления в фоне например. 
     
     """
+
+
+
+
+def extract_user_id(m: Message, default: int = DEFAULT_USER_ID) -> int:
+    user = m.from_user
+    if user is not None and user.id is not None:
+        return user.id
+    return default

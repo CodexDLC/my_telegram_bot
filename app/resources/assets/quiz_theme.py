@@ -1,6 +1,5 @@
-from typing import TypedDict, Literal, Final, get_args
+from typing import Final, Literal, TypedDict, get_args
 
-ThemeKey = Literal["sport", "history", "science", "python"]
 Difficulty = Literal["easy", "normal", "hard", "impossible"]
 
 ALL_DIFFICULTIES: tuple[Difficulty, ...] = get_args(Difficulty)
@@ -33,7 +32,7 @@ DIFFICULTY_DATA: Final[dict[Difficulty, DifficultyData]] = {
     }
 }
 
-game_rules = f"""
+game_rules = """
 
 Игра идет до 100 очков. Каждые несколько раундов повышается сложность игры.
 
@@ -47,7 +46,7 @@ impossible =10
 """
 
 
-QUIZ_THEME: Final[dict[ThemeKey, QuizTheme]]  = {
+QUIZ_THEME: Final[dict[str, dict[str, str]]]  = {
 
     "sport" : {
         "label" : "⚽ Спорт",

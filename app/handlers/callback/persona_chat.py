@@ -8,7 +8,6 @@ from aiogram.types import CallbackQuery, Message
 
 from app.handlers.callback.constant import MAX_LEN
 from app.resources.assets.role_dict import ROLE_SPECS
-
 from app.resources.assets.states import PersonTalk
 from app.resources.keyboards.inline import (
     chat_inline_kb,

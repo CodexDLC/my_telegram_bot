@@ -1,4 +1,4 @@
-from typing import List, Callable, Any
+from typing import Any, Callable, List
 
 from openai.types.chat import (
     ChatCompletionDeveloperMessageParam,
@@ -7,7 +7,7 @@ from openai.types.chat import (
     ChatCompletionUserMessageParam,
 )
 
-from app.resources.assets.dict_preset import ModePreset, ChatMode
+from app.resources.assets.dict_preset import ChatMode, ModePreset
 from app.resources.assets.quiz_theme import DEV_SQUIZ
 
 
@@ -85,11 +85,12 @@ def build_quiz(
 
 def build_chat(
     preset: ModePreset,
-    user_text: str | Any,
+    user_text: str,
     **kw: Any
-) -> List[ChatCompletionMessageParam]:
+) -> List[ChatCompletionMessageParam] | Any:
 
-    his = kw.get("history")
+
+    his = kw.setdefault("history", [])
 
     dev: ChatCompletionDeveloperMessageParam = {
         "role": "developer",
