@@ -26,13 +26,13 @@ async def parser_question(data: str) -> tuple[str, int, str, str, InlineKeyboard
     clearn_question = payload.get('question')
 
     if not isinstance(clearn_question, str):
-        raise ValueError("field 'question' must be str")
+        raise ValueError("field 'question' не имеет тип str")
     if not (isinstance(kb_data, list) and all(isinstance(x, str) for x in kb_data)):
-        raise ValueError("field 'options' must be list[str]")
+        raise ValueError("field 'options' не имеет тип list[str]")
     if not isinstance(question_resp_index, int):
-        raise ValueError("field 'correct' must be int")
+        raise ValueError("field 'correct' не имеет тип int")
     if not isinstance(question_resp_text, str):
-        raise ValueError("field 'explanation' must be str")
+        raise ValueError("field 'explanation' не имеет тип str")
 
     text_quest = f"""    
     <b>Вопрос:</b> {clearn_question}        

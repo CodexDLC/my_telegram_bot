@@ -35,7 +35,8 @@ async def pick_theme_handler(call: CallbackQuery, state: FSMContext)-> None:
         await call.answer("Пустой callback", show_alert=False)
         return
 
-    topic: str = data.strip(":")[-1]
+    topic: str = data.split(":")[-1]
+    log.info(f"Выбранный топик {topic}")
     if not topic:
         await call.answer("Некорректный callback", show_alert=True)
         return
@@ -135,8 +136,6 @@ async def quiz_answer_handler(call: CallbackQuery, state: FSMContext)-> None:
         if score_round == r and score_game >= g:
             difficulty = level
             break
-
-
 
     ui_game = make_ui_quiz(data)
 

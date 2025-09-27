@@ -21,3 +21,9 @@ class QuizGame(StatesGroup):
     START_GAME = State()
     PLAYING_GAME = State()
 
+
+
+class Recommendations(StatesGroup):
+    CHOOSE_CATEGORY = State()
+    CHOOSE_GENRE = State()
+    SHOW_RECOMMENDATION = State()
