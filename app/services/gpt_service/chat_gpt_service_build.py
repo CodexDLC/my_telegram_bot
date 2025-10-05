@@ -139,7 +139,7 @@ def build_recommendation(
 
 Builder = Callable[..., list[ChatCompletionMessageParam]]
 
-BUILDERS: dict[ChatMode, Builder] = {
+BUILDERS_GPT: dict[ChatMode, Builder] = {
     "random_fact": build_default,
     "chat": build_chat,
     "persona": build_persona,

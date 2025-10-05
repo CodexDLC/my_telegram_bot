@@ -7,10 +7,15 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from app.resources.assets.quiz_theme import QUIZ_THEME
 from app.resources.assets.recommen_dict import RECO_CATEGORIES
 from app.resources.assets.role_dict import ROLE_SPECS
+from app.resources.assets.translite_dict import lang
+from app.services.llm_provider import LLM_SERVICES
 
 log = logging.getLogger(__name__)
 
-
+btn_main_menu = InlineKeyboardButton(
+    text="🔙 Вернуться в меню",
+    callback_data="main_menu",
+)
 
 def start_inline_kb() -> InlineKeyboardMarkup:
     """
@@ -28,10 +33,28 @@ def start_inline_kb() -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-btn_main_menu = InlineKeyboardButton(
-    text="🔙 Вернуться в меню",
-    callback_data="main_menu",
-)
+
+def setting_menu_inline_kb() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Выбор модели", callback_data="model_selection")
+
+
+    return kb.as_markup()
+
+def setting_model_selection_inline_kb(*arg) -> InlineKeyboardMarkup:
+    """
+    :return: Возврат клавиатуры выбора модели.
+    """
+    model = arg[0] if arg else None
+    kb = InlineKeyboardBuilder()
+    for key in LLM_SERVICES.keys():
+        if model == key:
+            kb.button(text=f"✅ Модель: {key}", callback_data=f"model:{key}")
+        else:
+            kb.button(text=f"🤖 Модель: {key}", callback_data=f"model:{key}")
+    kb.adjust(2)
+    kb.row(btn_main_menu)
+    return kb.as_markup()
 
 
 def random_inline_kb() -> InlineKeyboardMarkup:
@@ -57,19 +80,21 @@ def chat_inline_kb() -> InlineKeyboardMarkup:
     return kb.as_markup()
 
 
-def translate_inline_kb() -> InlineKeyboardMarkup:
+def translate_inline_kb(*args) -> InlineKeyboardMarkup:
     """
     :return: Клавиатура для выбора языка перевода.
 
     """
+    choice = args[0] if args else None
 
     kb = InlineKeyboardBuilder()
-    kb.button(text="Британский", callback_data="tlang:en")
-    kb.button(text="Немецкий", callback_data="tlang:de")
-    kb.button(text="Французский", callback_data="tlang:fr")
-    kb.add(btn_main_menu)
+    for key, value in lang.items():
+        if key == choice:
+            kb.button(text=f"✅ {value}", callback_data=f"tlang:{key}")
+        else:
+            kb.button(text=value, callback_data=f"tlang:{key}")
     kb.adjust(3)
-
+    kb.row(btn_main_menu)
     return kb.as_markup()
 
 def get_person_inline_kb() -> InlineKeyboardMarkup:
@@ -174,3 +199,5 @@ def confirm_reco_inline_kb()->InlineKeyboardMarkup:
     kb.adjust(2)
 
     return kb.as_markup()
+
+

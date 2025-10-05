@@ -19,3 +19,8 @@ if not GPT_TOKEN:
         "OPENAI_TOKEN не найден. Проверьте .env файл или переменные окружения."
     )
 
+GEMINI_TOKEN = os.getenv("GEMINI_TOKEN")
+if not GEMINI_TOKEN:
+    raise RuntimeError(
+        "GEMINI_TOKEN не найден. Проверьте .env файл или переменные окружения."
+    )

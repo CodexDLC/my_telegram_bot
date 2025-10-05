@@ -17,7 +17,7 @@ from app.resources.keyboards.inline import (
 from app.resources.text.anonce import start_text
 from app.services.llm_provider import get_llm_answer
 
-gpt_answer = get_llm_answer()
+
 
 log = logging.getLogger(__name__)
 
@@ -84,8 +84,10 @@ async def fsm_text_persona_handler(m: Message, state: FSMContext)-> None:
     role_hint = spec["hint"]
     log.info(f"{role_hint}")
     chat_text = f"{m.text}"
+    user_id = m.from_user.id if m.from_user else None
+    answer_fn = get_llm_answer(user_id)
     msg_role = await m.answer(f"{spec['label']} думает")
-    response = await gpt_answer(
+    response = await answer_fn(
         "persona",
         user_text=chat_text,
         role_hint=role_hint,

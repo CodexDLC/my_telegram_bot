@@ -2,7 +2,7 @@ aiogram~=3.22.0
 python-dotenv~=1.1.1
 
 openai
-google-generativeai
+google-genai
 
 
 ruff

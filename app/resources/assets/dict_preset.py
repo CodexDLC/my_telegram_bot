@@ -13,24 +13,28 @@ class ModePreset(TypedDict):
     max_tokens: int
 
 
+
 MODE_PRESETS: Dict[ChatMode, ModePreset] = {
     "random_fact": {
         "developer": "Отвечай одним любопытным фактом. Коротко до 300 символов или не все токены",
         "system": "Ты даёшь проверяемые факты, без воды. Если не уверен — говори об этом.",
         "temperature": 0.4,
         "max_tokens": 200,
+
     },
     "chat": {
         "developer": "Обычный диалог. Ясно, дружелюбно, без канцелярита.",
         "system": "Ты полезный собеседник.",
         "temperature": 0.7,
         "max_tokens": 800,
+
     },
     "persona": {
         "developer": "Дальше будет инструкция : ",
         "system": "Говори в выбранной роли. Не выходи из образа, но не нарушай законы и политику.",
         "temperature": 0.8,
         "max_tokens": 800,
+
     },
     "quiz": {
         "developer": "Следуй инструкции дальше: ",
@@ -38,19 +42,23 @@ MODE_PRESETS: Dict[ChatMode, ModePreset] = {
                   "тебе приходят твои старые вопросы не повторяй их",
         "temperature": 0.9,
         "max_tokens": 800,
+
     },
     "translate": {
         "developer": "Переводи смысл и стиль, без буквального калькирования. Покажи только перевод.",
         "system": "Профессиональный переводчик.",
         "temperature": 0.2,
         "max_tokens": 800,
+
     },
     "reco": {
         "developer": "Предлагай 1 вариант с описанием и рейтингом c названием рейтинга.",
         "system": "Ты даёшь рекомендации основываясь на установках из developer.",
         "temperature": 0.7,
         "max_tokens": 600,
+
     },
 }
+
 
 

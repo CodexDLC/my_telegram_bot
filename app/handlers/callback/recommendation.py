@@ -11,8 +11,6 @@ from app.resources.assets.states import Recommendations
 from app.resources.keyboards.inline import recommend_inline_kb, genre_inline_kb, confirm_reco_inline_kb
 
 from app.services.llm_provider import get_llm_answer
-gpt_answer = get_llm_answer()
-
 from app.services.recommendation_service import parser_recommendation
 
 log = logging.getLogger(__name__)
@@ -99,10 +97,13 @@ async def confirm_reco_handler(call: CallbackQuery, state: FSMContext)-> None:
     else:
         reco = ""
 
+    user_id = call.from_user.id if call.from_user else None
+    answer_fn = get_llm_answer(user_id)
+
     if reco == "confirm":
-        resp = await gpt_answer(mode="reco", user_text="", apply_label=apply_label, category=category)
+        resp = await answer_fn(mode="reco", user_text="", apply_label=apply_label, category=category)
     elif reco == "restart":
-        resp = await gpt_answer(mode="reco", user_text="", apply_label=apply_label, category=category, exceptions=exceptions)
+        resp = await answer_fn(mode="reco", user_text="", apply_label=apply_label, category=category, exceptions=exceptions)
     else:
         resp = ""
         log.warning(f"такого запроса нету")

@@ -16,7 +16,7 @@ from app.services.context_service import add_message, get_history
 
 log = logging.getLogger(__name__)
 
-gpt_answer = get_llm_answer()
+
 router = Router(name="chat_gpt")
 
 
@@ -51,7 +51,9 @@ async def fsm_text_gpt_handler(m: Message, state: FSMContext)-> None:
     histore_context = await get_history(user_id, mod_chat_gpt)
     msg = await m.answer("ChatGPT думает .... ")
 
-    response = await gpt_answer("chat", user_text=chat_text, history=histore_context)
+    answer_fn = get_llm_answer(user_id)
+
+    response = await answer_fn("chat", user_text=chat_text, history=histore_context)
     await add_message(user_id, mod_chat_gpt, gpt_role, response)
 
     await msg.edit_text(response, reply_markup=chat_inline_kb())

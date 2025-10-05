@@ -8,13 +8,16 @@ from .callback.translate_talk import router as translate_talk_router
 from .callback.universal import router as universal_router
 from .callback.recommendation import router as recommendation_router
 from .commands import router as command_router
+from .setting_callback.model_selection import router as model_setting_router
 from .footer_menu import router as footer_menu_router
+
 
 router = Router()
 
 
 router.include_routers(
     command_router,
+    model_setting_router,
     footer_menu_router,
     chat_gpt_router,
     persona_chat_router,
@@ -23,4 +26,5 @@ router.include_routers(
     random_fact_router,
     recommendation_router,
     universal_router,
+
 )

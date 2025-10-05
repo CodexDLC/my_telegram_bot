@@ -4,7 +4,7 @@ import logging
 from aiogram import F, Router
 from aiogram.types import Message
 
-from app.resources.keyboards.inline import start_inline_kb
+from app.resources.keyboards.inline import start_inline_kb, setting_menu_inline_kb
 from app.resources.keyboards.reply import (
     btn_footer_help,
     btn_footer_menu,
@@ -33,4 +33,5 @@ async def footer_menu_help_handler(m: Message)-> None:
 @router.message(F.text == btn_footer_setting)
 async def footer_menu_settings_handler(m: Message)-> None:
     log.info(f"Поймали сообщение {btn_footer_setting}")
-    await m.answer(setting_text, parse_mode="HTML", reply_markup=None)
+
+    await m.answer(setting_text, parse_mode="HTML", reply_markup=setting_menu_inline_kb())

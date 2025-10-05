@@ -12,8 +12,6 @@ from app.resources.assets.states import QuizGame
 from app.resources.keyboards.inline import get_theme_quiz_inline_kb, star_game_inline_kb
 from app.services.llm_provider import get_llm_answer
 
-gpt_answer = get_llm_answer()
-
 from app.services.context_service import add_message, get_history
 from app.services.quiz_service import make_ui_quiz, parser_question, summ_score
 
@@ -84,9 +82,11 @@ async def quiz_question_handler(call: CallbackQuery, state: FSMContext) -> None:
               f"score_game = {score_game}\n score_round = {score_round}\n"
               f"label = {data["label"]}")
 
+    answer_fn = get_llm_answer(user_id)
+
     if call.data == "game:start":
         context = await get_history(user_id, mode_context)
-        resp_question = await gpt_answer("quiz", "", difficulty=difficulty, topic=topic, context=context)
+        resp_question = await answer_fn("quiz", "", difficulty=difficulty, topic=topic, context=context)
         log.debug(f"{resp_question}")
         text_quest, in_res, res_text, clearn_question, kb = await parser_question(resp_question)
         await add_message(user_id, mode_context, gpt_role, clearn_question)
