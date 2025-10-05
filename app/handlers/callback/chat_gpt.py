@@ -10,11 +10,13 @@ from app.handlers.callback.constant import DEFAULT_USER_ID, MAX_LEN, gpt_role, m
 from app.resources.assets.states import ChatGpt
 from app.resources.keyboards.inline import chat_inline_kb, start_inline_kb
 from app.resources.text.anonce import chat_gpt_active, start_text
-from app.services.chat_gpt_service import gpt_answer
+from app.services.llm_provider import get_llm_answer
+
 from app.services.context_service import add_message, get_history
 
 log = logging.getLogger(__name__)
 
+gpt_answer = get_llm_answer()
 router = Router(name="chat_gpt")
 
 

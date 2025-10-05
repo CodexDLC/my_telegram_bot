@@ -10,7 +10,10 @@ from app.handlers.callback.constant import gpt_role
 from app.resources.assets.quiz_theme import ALL_DIFFICULTIES, DIFFICULTY_DATA, QUIZ_THEME, TOPIC_KEYS
 from app.resources.assets.states import QuizGame
 from app.resources.keyboards.inline import get_theme_quiz_inline_kb, star_game_inline_kb
-from app.services.chat_gpt_service import gpt_answer
+from app.services.llm_provider import get_llm_answer
+
+gpt_answer = get_llm_answer()
+
 from app.services.context_service import add_message, get_history
 from app.services.quiz_service import make_ui_quiz, parser_question, summ_score
 

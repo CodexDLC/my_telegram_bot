@@ -6,7 +6,7 @@ from openai import AsyncOpenAI
 
 from app.core.config import GPT_TOKEN
 from app.resources.assets.dict_preset import MODE_PRESETS, ChatMode
-from app.services.chat_gpt_service_build import BUILDERS, build_default
+from app.services.gpt_service.chat_gpt_service_build import BUILDERS, build_default
 
 log = logging.getLogger(__name__)
 

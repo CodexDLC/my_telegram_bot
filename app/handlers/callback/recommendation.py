@@ -9,7 +9,10 @@ from aiogram.types import CallbackQuery, Message
 from app.resources.assets.recommen_dict import RECO_CATEGORIES
 from app.resources.assets.states import Recommendations
 from app.resources.keyboards.inline import recommend_inline_kb, genre_inline_kb, confirm_reco_inline_kb
-from app.services.chat_gpt_service import gpt_answer
+
+from app.services.llm_provider import get_llm_answer
+gpt_answer = get_llm_answer()
+
 from app.services.recommendation_service import parser_recommendation
 
 log = logging.getLogger(__name__)

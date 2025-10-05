@@ -10,7 +10,9 @@ from app.handlers.callback.constant import MAX_LEN
 from app.resources.assets.states import TranslateChat
 from app.resources.keyboards.inline import chat_inline_kb, translate_inline_kb
 from app.resources.text.anonce import start_text, translate_chat
-from app.services.chat_gpt_service import gpt_answer
+from app.services.llm_provider import get_llm_answer
+
+gpt_answer = get_llm_answer()
 
 log = logging.getLogger(__name__)
 

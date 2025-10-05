@@ -18,3 +18,4 @@ if not GPT_TOKEN:
     raise RuntimeError(
         "OPENAI_TOKEN не найден. Проверьте .env файл или переменные окружения."
     )
+
