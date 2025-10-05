@@ -23,9 +23,9 @@ def start_inline_kb() -> InlineKeyboardMarkup:
     """
     kb = InlineKeyboardBuilder()
     kb.button(text="🎲 Рандомный факт", callback_data="fact_random")
-    kb.button(text="🤖 ChatGPT интерфейс", callback_data="ui_chatgpt")
+    kb.button(text="🤖 Chat с ботом", callback_data="ui_chatgpt")
     kb.button(text="👥🗣️ Диалог с личностью", callback_data="dialog_persona")
-    kb.button(text="❓ Квиз", callback_data="quiz_open")
+    kb.button(text="❓ Quiz", callback_data="quiz_open")
     kb.button(text="🌐 Переводчик", callback_data="translate_open")
     kb.button(text="🎬 Рекомендации", callback_data="reco_open")
     kb.adjust(2)

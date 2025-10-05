@@ -1,6 +1,8 @@
 import json
 from typing import TypedDict
 
+from app.services.json_sanitizer import extract_json_str
+
 
 class RecoPayload(TypedDict):
     title: str
@@ -9,7 +11,8 @@ class RecoPayload(TypedDict):
 
 
 async def parser_recommendation(data: str) -> tuple[str, str, list[str]]:
-    payload: RecoPayload = json.loads(data)
+    json_str = extract_json_str(data)
+    payload: RecoPayload = json.loads(json_str)
 
     title = payload.get("title")
     description = payload.get("description")

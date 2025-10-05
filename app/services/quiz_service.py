@@ -7,6 +7,7 @@ from aiogram.types import InlineKeyboardMarkup
 
 from app.resources.assets.quiz_theme import DIFFICULTY_DATA
 from app.resources.keyboards.inline import quiz_question_inline_kb
+from app.services.json_sanitizer import extract_json_str
 
 log = logging.getLogger(__name__)
 
@@ -18,7 +19,8 @@ class QuizPayload(TypedDict):
     explanation: str
 
 async def parser_question(data: str) -> tuple[str, int, str, str, InlineKeyboardMarkup]:
-    payload: QuizPayload = json.loads(data)  # <-- теперь это dict с нужными ключами
+    json_str = extract_json_str(data)
+    payload: QuizPayload = json.loads(json_str)  # <-- теперь это dict с нужными ключами
 
     kb_data = payload.get('options')
     question_resp_index = payload.get('correct')
@@ -73,6 +75,3 @@ async def summ_score(dif: str, score: int) -> int:
             return score
     return 0
 
-
-
-# async def
