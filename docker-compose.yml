@@ -9,5 +9,6 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - OPENAI_TOKEN=${OPENAI_TOKEN}
+      - GEMINI_TOKEN=${GEMINI_TOKEN}
       - DEFAULT_LLM=${DEFAULT_LLM}
     restart: always
