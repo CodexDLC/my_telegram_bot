@@ -4,6 +4,7 @@ python-dotenv~=1.1.1
 openai
 google-genai
 
+aiosqlite
 
 ruff
 colorlog

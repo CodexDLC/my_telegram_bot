@@ -1,0 +1,82 @@
+{
+  "common": {
+    "need_text": "Нужен обычный текст.",
+    "text_too_long": "Нужен текст до {max_len} символов вы отправили {current_len} символов.",
+    "select_persona": "Выбери личность",
+    "error_empty_callback": "Пустой callback",
+    "error_invalid_callback": "Некорректный callback"
+  },
+  "anonce": {
+    "start": "<b>Доброго времени суток!</b>\n<i>Я к вашим услугам — выберите, в каком режиме поработаем сегодня:</i>\n\n🎲 <b>Рандомный факт</b> — один клик, и в копилке новая любопытная вещь.  \n🤖 <b>ChatGPT-интерфейс</b> — свободное общение, идеи, задачи.  \n🗣️ <b>Диалог с личностью</b> — разговор «как если бы…».  \n❓ <b>Квиз</b> — короткие вопросы, честные ответы.  \n🌐 <b>Переводчик</b> — смысл, стиль и тон без потерь.  \n🎬 <b>Рекомендации</b> — под настроение подберу кино и книги.",
+    "settings": "<b>Выбери пункт меню для настройки: </b>\n🤖 Выбор модели - Пока позволят выбрать архитектуру модели например ChatGPT или Gemini",
+    "chat_gpt_active": "<B>Режим чата с GPTchat активирован!</B>\nМожно просто писать сообщения в чат\nИли вернуться в главное меню.",
+    "translate_chat": "<B>Выберите язык перевода и отправляйте сообщения!</B>"
+  },
+  "help": {
+    "text": "<b>FaQ</b>\n\n\n ⁉️ Пока в разработке ⁉️\n\n"
+  },
+  "reply_buttons": {
+    "menu": "🏠 Меню",
+    "help": "❓ Помощь",
+    "settings": "⚙️ Настройки",
+    "placeholder": "Основные действия"
+  },
+  "inline_buttons": {
+    "main_menu": "🔙 Вернуться в меню",
+    "start_fact": "🎲 Рандомный факт",
+    "start_chat": "🤖 Chat с ботом",
+    "start_persona": "👥🗣️ Диалог с личностью",
+    "start_quiz": "❓ Quiz",
+    "start_translator": "🌐 Переводчик",
+    "start_recommendation": "🎬 Рекомендации",
+    "settings_select_model": "Выбор модели",
+    "model_selected": "✅ Модель: {model_name}",
+    "model_unselected": "🤖 Модель: {model_name}",
+    "random_another": "🎲 Еще факт",
+    "persona_switch": "Новая личность",
+    "quiz_get_question": "Получить вопрос",
+    "quiz_finish_game": "Закончить игру",
+    "reco_movies": "🎥 Фильмы",
+    "reco_series": "🎞️ Сериалы",
+    "reco_anime": "🎦 Аниме",
+    "reco_books": "📖 Книги",
+    "reco_confirm": "Подобрать",
+    "reco_another": "🎞️ Еще рекомендацию",
+    "reco_new_category": "🆕 Сменить категорию"
+  },
+  "handlers": {
+    "commands": {
+      "start": "Старт меню"
+    },
+    "settings": {
+      "select_model": "Выберите модель",
+      "model_applied": "Модель выбрана: {model_name}"
+    },
+    "chat_gpt": {
+      "thinking": "ChatGPT думает ...."
+    },
+    "persona": {
+      "role_changed": "Роль изменена на {role_name}",
+      "thinking": "{persona_name} думает"
+    },
+    "translator": {
+      "thinking": "Переводим ваш текст .... ",
+      "lang_selected": "Вы выбрали язык: {language_name}"
+    },
+    "quiz": {
+      "select_theme": "Выберите тему для игры",
+      "theme_unavailable": "Такая тема сейчас не доступна",
+      "game_finish": "Вы набрали {score} потратили {rounds} раундов\nправильных ответов {right}ш. \nНе правильных ответов {miss}i.",
+      "answer_correct": "Правильно! Накоплено очков {score}",
+      "answer_incorrect": "правильный ответ \n{correct_answer}",
+      "question_header": "<b>Вопрос:</b> {question_text}",
+      "game_ui": "<b>Очки:</b> {score}, <b>Сложность:</b> -={label}=-\n<b>Раунд:</b> {round}, <b>Тема игры:</b> {topic}."
+    },
+    "recommendation": {
+      "select_category": "Выберите категорию поиска",
+      "genres_selected_prefix": "Выбрано жанров: ",
+      "genres_selected_full": "{prefix} {genres_list}",
+      "result_message": "<b>Название: \"{title}\"</b>\n\n<i>{description}</i> \n\n{rating_m}"
+    }
+  }
+}
