@@ -55,5 +55,7 @@ def setup_logging(
 
     logging.basicConfig(level=level, handlers=handlers)
 
+
     logging.getLogger("aiogram").setLevel("INFO")
     logging.getLogger("httpx").setLevel("WARNING")
+    logging.getLogger("aiosqlite").setLevel("INFO")

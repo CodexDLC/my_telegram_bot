@@ -16,8 +16,8 @@ from app.resources.keyboards.inline import (
 )
 from app.resources.text.anonce import start_text
 from app.services.llm_provider import get_llm_answer
-
-
+from database.db import get_db_connection
+from database.repositories import get_user_repo
 
 log = logging.getLogger(__name__)
 
@@ -85,7 +85,12 @@ async def fsm_text_persona_handler(m: Message, state: FSMContext)-> None:
     log.info(f"{role_hint}")
     chat_text = f"{m.text}"
     user_id = m.from_user.id if m.from_user else None
-    answer_fn = get_llm_answer(user_id)
+
+    async with get_db_connection() as db:
+        user_repo = get_user_repo(db)
+        user_row = await user_repo.get_user(user_id)
+    answer_fn = get_llm_answer(user_row)
+
     msg_role = await m.answer(f"{spec['label']} думает")
     response = await answer_fn(
         "persona",

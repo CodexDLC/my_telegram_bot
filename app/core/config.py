@@ -24,3 +24,12 @@ if not GEMINI_TOKEN:
     raise RuntimeError(
         "GEMINI_TOKEN не найден. Проверьте .env файл или переменные окружения."
     )
+
+
+DB_NAME = os.getenv("DB_NAME_SQLITE")
+if not DB_NAME:
+    raise RuntimeError(
+        "DB_NAME_SQLITE не найден. Проверьте .env файл или переменные окружения."
+        )
+
+DEFAULT_LLM = os.getenv("DEFAULT_LLM")

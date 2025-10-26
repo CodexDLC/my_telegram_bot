@@ -13,6 +13,8 @@ from app.resources.text.anonce import chat_gpt_active, start_text
 from app.services.llm_provider import get_llm_answer
 
 from app.services.context_service import add_message, get_history
+from database.db import get_db_connection
+from database.repositories import get_user_repo
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +53,10 @@ async def fsm_text_gpt_handler(m: Message, state: FSMContext)-> None:
     histore_context = await get_history(user_id, mod_chat_gpt)
     msg = await m.answer("ChatGPT думает .... ")
 
-    answer_fn = get_llm_answer(user_id)
+    async with get_db_connection() as db:
+        user_repo = get_user_repo(db)
+        user_row = await user_repo.get_user(user_id)
+    answer_fn = get_llm_answer(user_row)
 
     response = await answer_fn("chat", user_text=chat_text, history=histore_context)
     await add_message(user_id, mod_chat_gpt, gpt_role, response)

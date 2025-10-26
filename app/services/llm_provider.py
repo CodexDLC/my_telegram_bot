@@ -1,51 +1,44 @@
-# app/services/llm_provider.py
 from __future__ import annotations
 import os
-from typing import Dict
+import logging
+from typing import Callable, Any, Dict, Optional
 
 from app.services.gemini_service.gemini_service import gemini_answer
 from app.services.gpt_service.chat_gpt_service import gpt_answer as gpt_answer_openai
 
-# как и было
-_active_llm_answer = None
+log = logging.getLogger(__name__)
 
-LLM_SERVICES = {
+# Тип для возвращаемой функции (сам сервис, gpt_answer или gemini_answer)
+LLMFunction = Callable[..., Any]
+
+# Словарь наших сервисов
+LLM_SERVICES: Dict[str, LLMFunction] = {
     "openai": gpt_answer_openai,
     "gemini": gemini_answer,
 }
 
-# новое: карта "пользователь -> выбранный провайдер"
-_user_llm_provider: Dict[int, str] = {}
+# Получаем модель по умолчанию из .env
+DEFAULT_MODEL_NAME = os.getenv("DEFAULT_LLM", "openai")
+# Получаем сервис по умолчанию на случай, если в LLM_SERVICES нет DEFAULT_MODEL_NAME
+DEFAULT_SERVICE = LLM_SERVICES.get(DEFAULT_MODEL_NAME, gemini_answer)
 
 
-def set_active_llm(model_name: str, user_id: int | None = None) -> bool:
+def get_llm_answer(user_row: Optional[Dict[str, Any]]) -> LLMFunction:
     """
-    Если user_id=None — ставим ГЛОБАЛЬНО.
-    Если user_id указан — сохраняем выбор только для этого пользователя.
+    Получает 'строку' пользователя из БД (или None)
+    и возвращает нужную LLM-функцию (gpt_answer или gemini_answer).
+
+    Этот сервис больше НЕ ходит в базу данных.
     """
-    if model_name not in LLM_SERVICES:
-        return False
+    model_name = DEFAULT_MODEL_NAME
 
-    if user_id is None:
-        global _active_llm_answer
-        _active_llm_answer = LLM_SERVICES[model_name]
-    else:
-        _user_llm_provider[user_id] = model_name
-    return True
+    if user_row:
+        # Пытаемся взять модель из строки БД
+        # .get() вернет None, если ключа 'llm_model' нет
+        model_name = user_row["llm_model"] or model_name
 
+    log.debug(f"Выбрана модель '{model_name}' для пользователя.")
 
-def get_llm_answer(user_id: int | None = None):
-    """
-    Если есть индивидуальный выбор для user_id — вернём его.
-    Иначе используем глобальный активный (или дефолт из ENV).
-    """
-    if user_id is not None:
-        model_name = _user_llm_provider.get(user_id)
-        if model_name:
-            return LLM_SERVICES[model_name]
-
-    global _active_llm_answer
-    if _active_llm_answer is None:
-        default_model = os.getenv("DEFAULT_LLM", "openai")
-        set_active_llm(default_model)
-    return _active_llm_answer
+    # Возвращаем ФУНКЦИЮ
+    # Если .get() не найдет model_name, он вернет сервис по умолчанию
+    return LLM_SERVICES.get(model_name, DEFAULT_SERVICE)

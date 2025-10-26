@@ -14,6 +14,8 @@ from app.services.llm_provider import get_llm_answer
 
 from app.services.context_service import add_message, get_history
 from app.services.quiz_service import make_ui_quiz, parser_question, summ_score
+from database.db import get_db_connection
+from database.repositories import get_user_repo
 
 log = logging.getLogger(__name__)
 
@@ -82,7 +84,10 @@ async def quiz_question_handler(call: CallbackQuery, state: FSMContext) -> None:
               f"score_game = {score_game}\n score_round = {score_round}\n"
               f"label = {data["label"]}")
 
-    answer_fn = get_llm_answer(user_id)
+    async with get_db_connection() as db:
+        user_repo = get_user_repo(db)
+        user_row = await user_repo.get_user(user_id)
+    answer_fn = get_llm_answer(user_row)
 
     if call.data == "game:start":
         context = await get_history(user_id, mode_context)

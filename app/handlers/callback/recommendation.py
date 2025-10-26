@@ -12,6 +12,8 @@ from app.resources.keyboards.inline import recommend_inline_kb, genre_inline_kb,
 
 from app.services.llm_provider import get_llm_answer
 from app.services.recommendation_service import parser_recommendation
+from database.db import get_db_connection
+from database.repositories import get_user_repo
 
 log = logging.getLogger(__name__)
 
@@ -98,7 +100,11 @@ async def confirm_reco_handler(call: CallbackQuery, state: FSMContext)-> None:
         reco = ""
 
     user_id = call.from_user.id if call.from_user else None
-    answer_fn = get_llm_answer(user_id)
+
+    async with get_db_connection() as db:
+        user_repo = get_user_repo(db)
+        user_row = await user_repo.get_user(user_id)
+    answer_fn = get_llm_answer(user_row)
 
     if reco == "confirm":
         resp = await answer_fn(mode="reco", user_text="", apply_label=apply_label, category=category)

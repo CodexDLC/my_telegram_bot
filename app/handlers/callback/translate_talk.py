@@ -12,8 +12,8 @@ from app.resources.assets.translite_dict import lang
 from app.resources.keyboards.inline import chat_inline_kb, translate_inline_kb
 from app.resources.text.anonce import start_text, translate_chat
 from app.services.llm_provider import get_llm_answer
-
-
+from database.db import get_db_connection
+from database.repositories import get_user_repo
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +52,12 @@ async def fsm_text_gpt_handler(m: Message, state: FSMContext)-> None:
 
     data = await state.get_data()
     user_id = m.from_user.id if m.from_user else None
-    answer_fn = get_llm_answer(user_id)
+
+    async with get_db_connection() as db:
+        user_repo = get_user_repo(db)
+        user_row = await user_repo.get_user(user_id)
+
+    answer_fn = get_llm_answer(user_row)
     tlang = data.get("to_lang")
     chat_text = f"Переведи этот текст на {tlang}: {m.text}"
     await m.answer("Переводим ваш текст .... ")

@@ -11,4 +11,7 @@ services:
       - OPENAI_TOKEN=${OPENAI_TOKEN}
       - GEMINI_TOKEN=${GEMINI_TOKEN}
       - DEFAULT_LLM=${DEFAULT_LLM}
+      - DB_NAME=${DB_NAME_SQLITE}
     restart: always
+    volumes:
+      - ./data:/app/data
